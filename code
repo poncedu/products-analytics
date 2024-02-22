@@ -1,0 +1,105 @@
+/******************************************
+* Extração de Métricas de Performance de Produtos em Campanhas do Google Ads
+*
+* Versão: 1.0
+* Data: 22/02/2024
+*
+* Direitos autorais Eduardo Ponce e Haus Performance 2024
+*
+* Visite nosso site https://hausperformance.com.br/
+* Nós também gerenciamos contas - envie um email para a equipe pelo contato@hausperformance.com.br para mais informações
+* ou conecte-se comigo no LinkedIn: https://www.linkedin.com/in/duponce/
+*
+* Instruções: Este script extrai e organiza métricas de performance de produtos em campanhas do Google Ads,
+* especificamente para contas que utilizam o feed de produtos (e-commerce). Ele fornece dados detalhados sobre impressões, cliques,
+* custo e valor de conversão de cada produto, facilitando a análise de desempenho e otimização de campanhas.
+*
+* Para utilizar este script, siga os passos abaixo:
+*
+*
+* 1. Substitua a URL na variável 'urlSheet' pela URL da sua planilha.
+*
+* 3. Autorize, salve e execute o script no Editor de Scripts do Google Ads.
+*
+* 4. Configure para executar diariamente e acompanhe o desempenho dos seus produtos diretamente na planilha.
+*
+
+/******************************************
+
+Para utilizar este script e a planilha associada, siga os passos abaixo:
+
+### 5. Copiar a Planilha
+
+- Acesse a planilha modelo disponível neste link: https://docs.google.com/spreadsheets/d/1VGLY44RAuNhYU-llN8RoJdtwrhz3_ejTICyWgkxi2wk/edit#gid=661579727
+- Faça uma cópia da planilha para a sua própria conta do Google Drive. Para isso, vá em `Arquivo` > `Fazer uma cópia`.
+
+### 5. Configurar o Script no Google Ads
+
+- Faça login na sua conta do Google Ads.
+- Acesse a seção `Scripts` no painel lateral.
+- Clique em `+` para adicionar um novo script.
+- Nomeie o script de acordo com sua preferência, por exemplo, "Extração de Métricas de Performance de Produtos [Haus Performance]".
+- Cole o código do script fornecido anteriormente na área de edição do script no Google Ads.
+- Substitua a variável `urlSheet` no início do script pela URL da cópia da planilha que você fez no passo 1.
+- Salve e autorize o script para executar na sua conta do Google Ads.
+- Agende a execução do script conforme necessário (diariamente é recomendado) para acompanhar a performance dos seus produtos.
+
+### 3. Verificar os Dados na Planilha
+
+- Após o script ser executado, verifique as abas específicas na sua planilha para visualizar os dados atualizados sobre impressões, cliques, custo e valor de conversão dos produtos.
+- Os dados serão organizados por nome da campanha e título do produto, fornecendo uma visão clara da performance de cada item anunciado.
+
+## Suporte
+
+Se você encontrar qualquer problema ou tiver alguma dúvida sobre como usar o script ou a planilha, entre em contato através do e-mail fornecido anteriormente ou pelo LinkedIn.
+******************************************/
+
+let urlSheet = 'https://docs.google.com/spreadsheets/d/1VGLY44RAuNhYU-llN8RoJdtwrhz3_ejTICyWgkxi2wk/edit#gid=472668930'; // ALTERE PARA A URL DA SUA PLANILHA
+
+/*NÃO ALTERE A PARTIR DESSA PARTE*/ 
+
+function main() {
+  var ss = SpreadsheetApp.openByUrl(urlSheet); 
+  
+  var sheetImpressions = ss.getSheetByName('r_prod_t');
+  var sheetClicks = ss.getSheetByName('r_prod_clicks');
+  var sheetCost = ss.getSheetByName('r_prod_cost'); 
+  var sheetValue = ss.getSheetByName('r_prod_value'); 
+
+  preparaAba(sheetImpressions, ['Nome da Campanha', 'Título do Produto', 'Impressões']);
+  preparaAba(sheetClicks, ['Nome da Campanha', 'Título do Produto', 'Clicks']);
+  preparaAba(sheetCost, ['Nome da Campanha', 'Título do Produto', 'Custo']);
+  preparaAba(sheetValue, ['Nome da Campanha', 'Título do Produto', 'Valor de Conversão']);
+
+  var consultaImpressoes = montaConsulta('metrics.impressions', 'DESC', 10);
+  var consultaCliques = montaConsulta('metrics.clicks', 'DESC', 10);
+  var consultaCusto = montaConsulta('metrics.cost_micros', 'DESC', 10);
+  var consultaValorConversao = montaConsulta('metrics.conversions_value', 'DESC', 10); 
+  
+  executaConsulta(consultaImpressoes, sheetImpressions, 'impressions');
+  executaConsulta(consultaCliques, sheetClicks, 'clicks');
+  executaConsulta(consultaCusto, sheetCost, 'cost_micros');
+  executaConsulta(consultaValorConversao, sheetValue, 'conversions_value'); 
+}
+
+function preparaAba(aba, cabecalhos) {
+  aba.clearContents();
+  aba.appendRow(cabecalhos);
+}
+
+function montaConsulta(metrica, ordem, limite) {
+  return `SELECT campaign.name, segments.product_title, ${metrica} FROM shopping_performance_view WHERE segments.date DURING LAST_30_DAYS ORDER BY ${metrica} ${ordem} LIMIT ${limite}`;
+}
+
+function executaConsulta(consulta, aba, tipoMetrica) {
+  var relatorio = AdsApp.report(consulta);
+  var linhas = relatorio.rows();
+  while (linhas.hasNext()) {
+    var linha = linhas.next();
+    var nomeCampanha = linha['campaign.name'];
+    var tituloProduto = linha['segments.product_title'];
+    var metrica = linha['metrics.' + tipoMetrica];
+    var valorMetrica = (tipoMetrica === 'cost_micros') ? (metrica ? parseFloat(metrica) / 1000000 : 0) : (metrica ? parseFloat(metrica) : 0);
+    aba.appendRow([nomeCampanha, tituloProduto, valorMetrica]);
+  }
+}
