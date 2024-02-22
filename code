@@ -16,24 +16,21 @@
 *
 * Para utilizar este script, siga os passos abaixo:
 *
-*
+- Acesse a planilha modelo disponível neste link: https://docs.google.com/spreadsheets/d/1VGLY44RAuNhYU-llN8RoJdtwrhz3_ejTICyWgkxi2wk/edit#gid=661579727
+- Faça uma cópia da planilha para a sua própria conta do Google Drive. Para isso, vá em `Arquivo` > `Fazer uma cópia`.
+
 * 1. Substitua a URL na variável 'urlSheet' pela URL da sua planilha.
 *
-* 3. Autorize, salve e execute o script no Editor de Scripts do Google Ads.
+* 2. Autorize, salve e execute o script no Editor de Scripts do Google Ads.
 *
-* 4. Configure para executar diariamente e acompanhe o desempenho dos seus produtos diretamente na planilha.
+* 3. Configure para executar diariamente e acompanhe o desempenho dos seus produtos diretamente na planilha.
 *
 
 /******************************************
 
 Para utilizar este script e a planilha associada, siga os passos abaixo:
 
-### 5. Copiar a Planilha
-
-- Acesse a planilha modelo disponível neste link: https://docs.google.com/spreadsheets/d/1VGLY44RAuNhYU-llN8RoJdtwrhz3_ejTICyWgkxi2wk/edit#gid=661579727
-- Faça uma cópia da planilha para a sua própria conta do Google Drive. Para isso, vá em `Arquivo` > `Fazer uma cópia`.
-
-### 5. Configurar o Script no Google Ads
+### 4. Configurar o Script no Google Ads
 
 - Faça login na sua conta do Google Ads.
 - Acesse a seção `Scripts` no painel lateral.
@@ -44,7 +41,7 @@ Para utilizar este script e a planilha associada, siga os passos abaixo:
 - Salve e autorize o script para executar na sua conta do Google Ads.
 - Agende a execução do script conforme necessário (diariamente é recomendado) para acompanhar a performance dos seus produtos.
 
-### 3. Verificar os Dados na Planilha
+### 5. Verificar os Dados na Planilha
 
 - Após o script ser executado, verifique as abas específicas na sua planilha para visualizar os dados atualizados sobre impressões, cliques, custo e valor de conversão dos produtos.
 - Os dados serão organizados por nome da campanha e título do produto, fornecendo uma visão clara da performance de cada item anunciado.
